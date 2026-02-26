@@ -10,7 +10,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "AArch64ExpandImm.h"
+#include "AArch64ExpandPseudo.h"
 #include "AArch64InstrInfo.h"
 #include "AArch64MCSymbolizer.h"
 #include "MCTargetDesc/AArch64AddressingModes.h"
@@ -147,8 +147,8 @@ static InstructionListType createIncMemory(MCPhysReg RegTo, MCPhysReg RegTmp) {
 
 static InstructionListType createMOVImm(MCPhysReg DstReg, unsigned BitSize,
                                         uint64_t Imm) {
-  SmallVector<AArch64_IMM::ImmInsnModel> Insn;
-  AArch64_IMM::expandMOVImm(Imm, BitSize, Insn);
+  SmallVector<AArch64_ExpandPseudo::ImmInsnModel> Insn;
+  AArch64_ExpandPseudo::expandMOVImm(Imm, BitSize, Insn);
   assert(Insn.size() != 0);
 
   InstructionListType Insts;
