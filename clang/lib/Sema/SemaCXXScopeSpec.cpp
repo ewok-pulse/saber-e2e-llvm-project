@@ -147,9 +147,9 @@ DeclContext *Sema::computeDeclContext(const CXXScopeSpec &SS,
           if (Context.hasSameType(Injected, QualType(SpecType, 0)))
             return ClassTemplate->getTemplatedDecl();
         }
-      } else if (const auto *RecordT = dyn_cast<RecordType>(NNSType)) {
+      } else if (auto *RD = NNSType->getAsCXXRecordDecl()) {
         // The nested name specifier refers to a member of a class template.
-        return RecordT->getDecl()->getDefinitionOrSelf();
+        return RD;
       }
     }
 
@@ -881,6 +881,7 @@ bool Sema::ActOnCXXNestedNameSpecifierDecltype(CXXScopeSpec &SS,
 
   TypeLocBuilder TLB;
   DecltypeTypeLoc DecltypeTL = TLB.push<DecltypeTypeLoc>(T);
+  DecltypeTL.setUnderlyingExpr(DS.getRepAsExpr());
   DecltypeTL.setDecltypeLoc(DS.getTypeSpecTypeLoc());
   DecltypeTL.setRParenLoc(DS.getTypeofParensRange().getEnd());
   SS.Make(Context, TLB.getTypeLocInContext(Context, T), ColonColonLoc);
